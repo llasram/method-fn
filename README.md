@@ -14,8 +14,16 @@ Leiningen `project.clj`:
 ## Usage
 
 Method-fn provides Clojure 1.4+ tagged literals for producing Clojure
-functions from symbols representing Java methods.  It supports several
-different forms:
+functions from symbols representing Java methods.  First, you must
+ensure the namespace has been loaded prior to using the tagged literal
+syntax:
+
+```clj
+(require 'method.fn)
+```
+
+Then method-fn provides several different forms of method-as-function
+tagged literals.
 
 Bare instance methods, via reflection:
 
