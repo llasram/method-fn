@@ -1,10 +1,50 @@
 # method-fn
 
-A Clojure library for using of Java methods as functions.
+A Clojure library augmenting Java methods as functions.
+
+## Installation
+
+Method-fn is available on Clojars.  Add this `:dependency` to your
+Leiningen `project.clj`:
+
+```clj
+[org.platypope/method-fn "0.1.0"]
+```
 
 ## Usage
 
-FIXME
+Method-fn provides Clojure 1.4+ tagged literals for producing Clojure
+functions from symbols representing Java methods.  It supports several
+different forms:
+
+Bare instance methods, via reflection:
+
+```clj
+(map #mf/i toUpperCase ["foo" "bar"]) ;;=> ("FOO" "BAR")
+```
+
+Class-qualified instance methods:
+
+```clj
+(map #mf/i String/toUpperCase ["foo" "bar"]) ;;=> ("FOO" "BAR")
+```
+
+And class-qualified static methods:
+
+```clj
+(map #mf/s Math/sqrt [1 4 9]) ;;=> (1.0 2.0 3.0)
+```
+
+## Rationale
+
+Method-fn has the following benefits over Clojure’s anonymous function
+syntax and `memfn` macro:
+
+* Same-length or shorter syntax.
+* Provides all available method arities.
+* Type-hints the invocation target for class-qualified instance
+  methods.
+* Generates only one function class and instance per method.
 
 ## License
 
