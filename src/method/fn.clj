@@ -1,5 +1,5 @@
 (ns method.fn
-  "Method function tagged literal constructors."
+  "Method/constructor function tagged literal constructors."
   (:require [clojure.string :as str]
             [clojure.reflect :as r]))
 
@@ -83,4 +83,18 @@ its name indicates the method."
          ~@(map (fn [n]
                   (let [args (repeatedly n gensym)]
                     `([~@args] (. ~csym ~msym ~@args))))
+                counts)))))
+
+(defn constructor
+  "Return source for a function invoking the constructors for the class
+identified by the symbol `csym`."
+  [csym]
+  (let [cls (resolve csym)
+        csym (symbol (.getName ^Class cls))
+        counts (arity-set cls csym)]
+    (with-library [:constructor csym]
+      `(fn ~(symbol (str csym "-c"))
+         ~@(map (fn [n]
+                  (let [args (repeatedly n gensym)]
+                    `([~@args] (new ~csym ~@args))))
                 counts)))))
