@@ -39,9 +39,11 @@ method named `msym`."
   "Return the set of arities for the method `msym` of class `cls`."
   ([cls msym] (arity-set (constantly true) cls msym))
   ([f cls msym]
-     (->> cls r/reflect :members
-          (filter #(and (-> % :name (= msym))
-                        (-> % :flags f)))
+     (->> cls r/type-reflect :members
+          (filter #(let [flags (:flags %)]
+                     (and (= msym (:name %))
+                          (:public flags)
+                          (f flags))))
           (map (comp count :parameter-types))
           set)))
 
