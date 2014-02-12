@@ -18,5 +18,7 @@
                            (repeat 2) (range 5)))))
 
 (deftest test-caching
-  (is (identical? #mf/i String/trim #mf/i String/trim))
-  (is (identical? #mf/s Math/pow #mf/s Math/pow)))
+  (is (identical? (class #mf/i String/trim)
+                  (class #mf/i String/trim)))
+  (is (identical? (class #mf/s Math/pow)
+                  (class #mf/s Math/pow))))

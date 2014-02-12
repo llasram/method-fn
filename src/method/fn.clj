@@ -7,19 +7,22 @@
   "Collection of all generated method functions."
   (atom {}))
 
+(defn ^:private get-or-add
+  [library keys f]
+  (if (get-in library keys)
+    library
+    (let [form (delay (->> (f) eval class (list 'new)))]
+      (assoc-in library keys form))))
+
+(defn ^:private with-library*
+  [keys f] (-> library (swap! get-or-add keys f) (get-in keys) deref))
+
 (defmacro ^:private with-library
   "If a value exists in the library at the key-path `keys`, return
 than value.  Otherwise `eval` `body`, retain the result in the
 library, and return it."
- [keys body]
-  `(let [keys# ~keys]
-     @(get-in (swap! library
-                     (fn [library#]
-                       (if (get-in library# keys#)
-                         library#
-                         (assoc-in library# keys#
-                                   (-> ~body eval delay)))))
-              keys#)))
+  [keys & body]
+  `(with-library* ~keys (^:once fn* [] ~@body)))
 
 (defn reflection
   "Return source for a function invoking via reflection the unbound
