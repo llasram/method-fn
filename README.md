@@ -8,7 +8,7 @@ Method-fn is available on Clojars.  Add this `:dependency` to your Leiningen
 `project.clj`:
 
 ```clj
-[org.platypope/method-fn "0.1.0"]
+[org.platypope/method-fn "0.2.0"]
 ```
 
 ## Usage

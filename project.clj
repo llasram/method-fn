@@ -1,4 +1,4 @@
-(defproject org.platypope/method-fn "0.2.0-SNAPSHOT"
+(defproject org.platypope/method-fn "0.2.0"
   :description "A Clojure library augmenting Java methods as functions"
   :url "http://github.com/llasram/method-fn"
   :license {:name "Eclipse Public License"
