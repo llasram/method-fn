@@ -4,7 +4,7 @@
             [clojure.reflect :as r]))
 
 (def ^:private library
-  "Collection of all generated method functions."
+  "Collection of all generated method function classes."
   (atom {}))
 
 (defn ^:private get-or-add
@@ -24,7 +24,7 @@ library, and return it."
   [keys & body]
   `(with-library* ~keys (^:once fn* [] ~@body)))
 
-(defn reflection
+(defn ^:private reflection
   "Return source for a function invoking via reflection the unbound
 method named `msym`."
   [msym]
@@ -47,7 +47,7 @@ method named `msym`."
           (map (comp count :parameter-types))
           set)))
 
-(defn instance
+(defn ^:private instance
   "Return source for a function invoking the instance method `sym`,
 fully-qualified such that `sym`'s namespace indicates the class and
 its name indicates the method."
@@ -67,7 +67,15 @@ its name indicates the method."
                     (let [args (repeatedly n gensym)]
                       `([~this ~@args] (. ~this ~msym ~@args))))
                   counts))))))
-(defn static
+
+(defmacro i
+  "Function invoking the instance method `sym`.  If `sym` is
+namespace-qualified, then the namespace is used as the method invocation class.
+Otherwise, the function will perform reflection when called to determine the
+appropriate method."
+  [sym] (instance sym))
+
+(defn ^:private static
   "Return source for a function invoking the static method `sym`,
 fully-qualified such that `sym`'s namespace indicates the class and
 its name indicates the method."
@@ -85,7 +93,12 @@ its name indicates the method."
                     `([~@args] (. ~csym ~msym ~@args))))
                 counts)))))
 
-(defn constructor
+(defmacro s
+  "Function invoking the static method `sym`, fully-qualified such that `sym`'s
+namespace indicates the class and its name indicates the method."
+  [sym] (static sym))
+
+(defn ^:private constructor
   "Return source for a function invoking the constructors for the class
 identified by the symbol `csym`."
   [csym]
@@ -98,3 +111,7 @@ identified by the symbol `csym`."
                   (let [args (repeatedly n gensym)]
                     `([~@args] (new ~csym ~@args))))
                 counts)))))
+
+(defmacro c
+  "Function invoking constructors for the class named by the symbol `csym`."
+  [csym] (constructor csym))
