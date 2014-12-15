@@ -92,11 +92,15 @@ identified by the symbol `csym`."
           f (source-fn k), sym (apply symbol ns)]
       (eval (f sym)))))
 
+(def ^:private ^:const magic-ns
+  "Namespace name symbol for \"magic\" namespace."
+  'method.fn.!magic)
+
 (let [field (doto (.getDeclaredField Namespace "namespaces")
               (.setAccessible true))
       nses ^ConcurrentHashMap (.get field nil)]
-  (.put nses 'method.fn.functions
-        (proxy [ExtensibleNamespace] ['method.fn.functions]
+  (.put nses magic-ns
+        (proxy [ExtensibleNamespace] [magic-ns]
           (findInternedVar [sym]
             (let [v (.intern ^Namespace this sym)]
               (alter-var-root v function-for sym)
@@ -105,11 +109,12 @@ identified by the symbol `csym`."
 (defn ^:private mangle
   [kind sym]
   (let [ns (namespace sym), n (name sym)
-        base (if-not ns
-               (str kind "|" n)
-               (let [cname (.getName ^Class (resolve (symbol ns)))]
-                 (str kind "|" cname "|" n)))]
-    (symbol "method.fn.functions" base)))
+        sym (if-not ns
+              (str kind "|" n)
+              (let [cname (.getName ^Class (resolve (symbol ns)))]
+                (str kind "|" cname "|" n)))
+        ns (name magic-ns)]
+    (symbol ns sym)))
 
 (defn ^:private i*
   "Function form of `i`, for data reader."
