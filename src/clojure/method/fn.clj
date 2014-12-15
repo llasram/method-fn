@@ -3,7 +3,7 @@
   (:require [clojure.string :as str]
             [clojure.reflect :as r])
   (:import [java.util.concurrent ConcurrentHashMap]
-           [clojure.lang Namespace ExtensibleNamespace Var$Unbound]))
+           [clojure.lang Namespace MethodFnNamespace Var$Unbound]))
 
 (defn ^:private reflection
   "Return source for a function invoking via reflection the unbound
@@ -100,7 +100,7 @@ identified by the symbol `csym`."
               (.setAccessible true))
       nses ^ConcurrentHashMap (.get field nil)]
   (.put nses magic-ns
-        (proxy [ExtensibleNamespace] [magic-ns]
+        (proxy [MethodFnNamespace] [magic-ns]
           (findInternedVar [sym]
             (let [v (.intern ^Namespace this sym)]
               (alter-var-root v function-for sym)
