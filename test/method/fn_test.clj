@@ -27,7 +27,11 @@
          (map (comp (mf/c BigInteger) str) (range 5)))))
 
 (deftest test-caching
-  (is (identical? (class #mf/i String/trim)
-                  (class #mf/i String/trim)))
-  (is (identical? (class #mf/s Math/pow)
-                  (class #mf/s Math/pow))))
+  (is (identical? #mf/i String/trim
+                  (mf/i String/trim)))
+  (is (identical? #mf/s Math/pow
+                  (mf/s Math/pow))))
+
+(deftest test-threading
+  (let [^Object word "   foo    ", expected "FOO"]
+    (is (= expected (-> word #mf/i String/trim #mf/i String/toUpperCase)))))
