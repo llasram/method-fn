@@ -1,4 +1,4 @@
-{mf/i method.fn/instance,
- mf/s method.fn/static,
- mf/c method.fn/constructor,
+{mf/i method.fn/i*,
+ mf/s method.fn/s*,
+ mf/c method.fn/c*,
  }
