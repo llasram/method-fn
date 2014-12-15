@@ -8,7 +8,7 @@ Method-fn is available on Clojars.  Add this `:dependency` to your Leiningen
 `project.clj`:
 
 ```clj
-[org.platypope/method-fn "0.2.0"]
+[org.platypope/method-fn "0.3.0"]
 ```
 
 ## Usage
@@ -53,6 +53,12 @@ And class constructors:
 (map (mf/c BigInteger) ["1" "2" "3"])
 ```
 
+The tagged literal form even works with threading macros:
+
+```clj
+(-> x #mf/i String/trim #mf/i String/toUpperCase)
+```
+
 ## Rationale
 
 Method-fn has the following benefits over Clojure’s anonymous function syntax
@@ -62,6 +68,7 @@ and `memfn` macro:
 * Provides all available method arities.
 * Type-hints the invocation target for class-qualified instance methods.
 * Generates only one function class per method.
+* Tagged literal form works inside of threading macros.
 
 ## License
 
